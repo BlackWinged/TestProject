@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using System.Collections;
 
-public class CardLogic : MonoBehaviour, IPointerClickHandler
+public class CardLogic : MonoBehaviour
 {
     [Header("Flip Animation Settings")]
     [SerializeField] private float flipDuration = 0.5f;
@@ -16,11 +17,20 @@ public class CardLogic : MonoBehaviour, IPointerClickHandler
     [Tooltip("Material for the back face of the card")]
     [SerializeField] private Material backFaceMaterial;
 
+    [Header("Click Detection")]
+    [Tooltip("Use raycast-based click detection (more reliable)")]
+    [SerializeField] private bool useRaycastClick = true;
+    
+    [Tooltip("Camera to use for raycasting (leave null to use Camera.main)")]
+    [SerializeField] private Camera raycastCamera;
+
     private bool isFlipping = false;
     private bool isFlipped = false;
     private Vector3 originalPosition;
     private Quaternion originalRotation;
     private Renderer cardRenderer;
+    private Collider cardCollider;
+    private Mouse mouse;
 
     void Start()
     {
@@ -34,6 +44,33 @@ public class CardLogic : MonoBehaviour, IPointerClickHandler
             cardRenderer = GetComponentInChildren<Renderer>();
         }
         
+        // Get collider component
+        cardCollider = GetComponent<Collider>();
+        if (cardCollider == null)
+        {
+            cardCollider = GetComponentInChildren<Collider>();
+        }
+        
+        // Ensure there's a collider for click detection
+        if (cardCollider == null)
+        {
+            Debug.LogWarning($"CardLogic on {gameObject.name}: No Collider found! Adding BoxCollider. OnMouseDown requires a Collider.");
+            cardCollider = gameObject.AddComponent<BoxCollider>();
+        }
+        
+        // Get camera for raycasting
+        if (raycastCamera == null)
+        {
+            raycastCamera = Camera.main;
+            if (raycastCamera == null)
+            {
+                raycastCamera = FindObjectOfType<Camera>();
+            }
+        }
+        
+        // Get mouse input
+        mouse = Mouse.current;
+        
         // If materials are not assigned, try to find them
         if (cardRenderer != null && frontFaceMaterial == null)
         {
@@ -41,18 +78,38 @@ public class CardLogic : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    void Update()
     {
-        if (!isFlipping)
+        if (useRaycastClick && mouse != null && raycastCamera != null)
         {
-            StartCoroutine(FlipCard());
+            // Check for left mouse button click
+            if (mouse.leftButton.wasPressedThisFrame)
+            {
+                CheckRaycastClick();
+            }
         }
     }
 
-    // Alternative: Use OnMouseDown if not using EventSystem
+    void CheckRaycastClick()
+    {
+        // Create ray from camera through mouse position
+        Ray ray = raycastCamera.ScreenPointToRay(mouse.position.ReadValue());
+        RaycastHit hit;
+
+        // Check if ray hits this card's collider
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.collider == cardCollider && !isFlipping)
+            {
+                StartCoroutine(FlipCard());
+            }
+        }
+    }
+
+    // OnMouseDown - requires: Collider (not trigger), object not on UI layer, camera can see it
     void OnMouseDown()
     {
-        if (!isFlipping)
+        if (!useRaycastClick && !isFlipping)
         {
             StartCoroutine(FlipCard());
         }
