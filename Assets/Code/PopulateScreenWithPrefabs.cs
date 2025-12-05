@@ -14,20 +14,16 @@ public class PopulateScreenWithPrefabs : MonoBehaviour
     [SerializeField] private bool randomizePositions = false;
     
     [Header("Camera Settings")]
-    [SerializeField] private Camera targetCamera;
     [SerializeField] private float zPosition = 0f;
     [SerializeField] private float padding = 0.5f;
 
+    private Camera targetCamera;
+
     private void Start()
     {
-        // Get camera if not assigned
         if (targetCamera == null)
         {
             targetCamera = Camera.main;
-            if (targetCamera == null)
-            {
-                targetCamera = FindObjectOfType<Camera>();
-            }
         }
 
         // Load prefab if not assigned

@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MemoryGameLogic : MonoBehaviour
 {
@@ -44,20 +45,10 @@ public class MemoryGameLogic : MonoBehaviour
 
     public void StartGame()
     {
-
+        var buttons = GameObject.FindGameObjectsWithTag("HideableMenu");
+        foreach (var button in buttons) button.SetActive(false);
     }
 }
 
 
 
-public class Card
-{
-    public int id;
-    public bool isFlipped;
-    public bool isMatched;
-    public Card(int id)
-    {
-        this.id = id;
-        this.isFlipped = false;
-    }
-}
