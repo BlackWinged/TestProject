@@ -5,7 +5,7 @@ public class CameraMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
-    
+
     [Header("Mouse Look Settings")]
     public float lookSensitivity = 2f;
     public bool invertY = false;
@@ -27,10 +27,10 @@ public class CameraMovement : MonoBehaviour
         {
             cam = Camera.main;
         }
-        
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        
+
         // Initialize rotation to current camera rotation
         if (cam != null)
         {
@@ -42,9 +42,12 @@ public class CameraMovement : MonoBehaviour
 
     void Update()
     {
-        HandleMouseLook();
-        HandleMovement();
         HandleCursorToggle();
+        if (Cursor.lockState == CursorLockMode.Locked)
+        {
+            HandleMouseLook();
+        }
+        HandleMovement();
     }
 
     void HandleMouseLook()
@@ -52,7 +55,7 @@ public class CameraMovement : MonoBehaviour
         // Get mouse delta from input
         float mouseX = lookInput.x * lookSensitivity;
         float mouseY = lookInput.y * lookSensitivity;
-        
+
         if (invertY) mouseY = -mouseY;
 
         // Horizontal rotation (Y-axis) - rotate the entire transform

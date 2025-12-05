@@ -79,7 +79,7 @@ public class VideoSliderLogic3D : MonoBehaviour
     void OnSliderValueChanged(float value)
     {
         // This is called when user drags the slider
-        if (videoPlayer != null && videoPlayer.isPrepared)
+        if (videoPlayer != null && videoPlayer.isPrepared && isDraggingSlider)
         {
             double totalTime = GetVideoLength();
             if (totalTime > 0)
