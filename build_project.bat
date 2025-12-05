@@ -1,0 +1,1 @@
+"C:\Program Files\Unity\Hub\Editor\6000.2.14f1\Editor\Unity.exe" -projectPath "H:\unity projects\TestProj\TestProject" -activeBuildProfile "H:\unity projects\TestProj\TestProject\Assets\Settings\Build Profiles\Web - Desktop - Development.asset" -build "H:\unity projects\TestProj\TestProject\BuiltProject" -quit
