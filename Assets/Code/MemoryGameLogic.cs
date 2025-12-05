@@ -31,16 +31,19 @@ public class MemoryGameLogic : MonoBehaviour
     public void PickEasy()
     {
         pickedNumberOfPairs = numberOfPairs_easy;
+        StartGame();
     }
 
     public void PickMedium()
     {
         pickedNumberOfPairs = numberOfPairs_medium;
+        StartGame();
     }
 
     public void PickHard()
     {
         pickedNumberOfPairs = numberOfPairs_hard;
+        StartGame();
     }
 
     public void StartGame()
