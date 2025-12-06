@@ -1,3 +1,4 @@
+using TestProject;
 using UnityEngine;
 
 public class PopulateScreenWithPrefabs : MonoBehaviour
@@ -50,11 +51,11 @@ public class PopulateScreenWithPrefabs : MonoBehaviour
         }
 
         // Calculate visible world bounds
-        Bounds visibleBounds = GetVisibleWorldBounds();
+        Bounds visibleBounds = Utils.GetVisibleWorldBounds(targetCamera, padding);
 
         if (useGridLayout)
         {
-            PopulateGrid(visibleBounds);
+            Utils.PopulateGrid(prefabToInstantiate, numberOfInstances, visibleBounds, (int)gridSize.x, spacing);
         }
         else
         {
@@ -62,64 +63,7 @@ public class PopulateScreenWithPrefabs : MonoBehaviour
         }
     }
 
-    private Bounds GetVisibleWorldBounds()
-    {
-        if (targetCamera.orthographic)
-        {
-            // Orthographic camera
-            float height = targetCamera.orthographicSize * 2f;
-            float width = height * targetCamera.aspect;
-            
-            Vector3 center = targetCamera.transform.position;
-            center.z = zPosition;
-            
-            return new Bounds(center, new Vector3(width - padding * 2, height - padding * 2, 0));
-        }
-        else
-        {
-            // Perspective camera - calculate bounds at zPosition
-            float distance = Mathf.Abs(targetCamera.transform.position.z - zPosition);
-            float height = 2.0f * distance * Mathf.Tan(targetCamera.fieldOfView * 0.5f * Mathf.Deg2Rad);
-            float width = height * targetCamera.aspect;
-            
-            Vector3 center = targetCamera.transform.position + targetCamera.transform.forward * distance;
-            center.z = zPosition;
-            
-            return new Bounds(center, new Vector3(width - padding * 2, height - padding * 2, 0));
-        }
-    }
-
-    private void PopulateGrid(Bounds bounds)
-    {
-        // Calculate grid dimensions
-        int cols = Mathf.CeilToInt(gridSize.x);
-        int rows = Mathf.CeilToInt(gridSize.y);
-        
-        // Adjust if numberOfInstances is set
-        if (numberOfInstances > 0)
-        {
-            cols = Mathf.CeilToInt(Mathf.Sqrt(numberOfInstances * (bounds.size.x / bounds.size.y)));
-            rows = Mathf.CeilToInt((float)numberOfInstances / cols);
-        }
-
-        // Calculate spacing
-        float xSpacing = bounds.size.x / (cols + 1);
-        float ySpacing = bounds.size.y / (rows + 1);
-
-        // Starting position (bottom-left of bounds)
-        Vector3 startPos = bounds.min + new Vector3(xSpacing, ySpacing, 0);
-
-        int instanceCount = 0;
-        for (int row = 0; row < rows && instanceCount < numberOfInstances; row++)
-        {
-            for (int col = 0; col < cols && instanceCount < numberOfInstances; col++)
-            {
-                Vector3 position = startPos + new Vector3(col * xSpacing, row * ySpacing, zPosition);
-                InstantiatePrefab(position);
-                instanceCount++;
-            }
-        }
-    }
+   
 
     private void PopulateRandom(Bounds bounds)
     {

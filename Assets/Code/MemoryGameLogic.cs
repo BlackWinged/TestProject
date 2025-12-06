@@ -1,5 +1,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
+using TestProject;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,6 +24,9 @@ public class MemoryGameLogic : MonoBehaviour
 
     private int pickedNumberOfPairs;
     private List<GameObject> CardDeck = new List<GameObject>();
+
+    private int NumberOfAttempts;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -58,12 +63,12 @@ public class MemoryGameLogic : MonoBehaviour
         var buttons = GameObject.FindGameObjectsWithTag("HideableMenu");
         foreach (var button in buttons) button.SetActive(false);
 
-        for (int i = 0; i < pickedNumberOfPairs; i += 2)
-        {
-            GameObject instance = Instantiate(CardPrefab, new Vector2(5, 5), Quaternion.identity);
-            GameObject instance2 = Instantiate(CardPrefab, new Vector2(5, 5), Quaternion.identity);
-            CardDeck.Add(instance);
-        }
+        CardDeck.AddRange(Utils.PopulateGrid(CardPrefab, pickedNumberOfPairs * 2, Utils.GetVisibleWorldBounds(Camera.main, 1f), 3, 4.2f));
+    }
+
+    public void CheckCardStatus()
+    {
+        var flippedCards = CardDeck.Where(x => x.GetComponent<CardLogic>().IsFlipped).Count();
     }
 }
 
