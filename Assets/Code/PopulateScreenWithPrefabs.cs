@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using TestProject;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PopulateScreenWithPrefabs : MonoBehaviour
@@ -53,14 +54,15 @@ public class PopulateScreenWithPrefabs : MonoBehaviour
         // Calculate visible world bounds
         Bounds visibleBounds = Utils.GetVisibleWorldBounds(targetCamera, padding);
 
-            PopulateGrid(prefabToInstantiate, numberOfInstances, visibleBounds, (int)gridSize.x);
-        //if (useGridLayout)
-        //{
-        //}
-        //else
-        //{
-        //    PopulateRandom(visibleBounds);
-        //}
+        if (useGridLayout)
+        {
+            var result = new List <GameObject>();
+            result.AddRange(PopulateGrid(prefabToInstantiate, numberOfInstances, visibleBounds, (int)gridSize.x, gridSize.y, positionJitter));
+        }
+        else
+        {
+            PopulateRandom(visibleBounds);
+        }
     }
 
     public IEnumerable<GameObject> PopulateGrid(GameObject prefab, int objectCount, Bounds bounds, int colNumber, float ySpacing = 0.6f, float jitter = 0f)

@@ -82,7 +82,7 @@ public class MemoryGameLogic : MonoBehaviour
         var buttons = GameObject.FindGameObjectsWithTag("HideableMenu");
         foreach (var button in buttons) button.SetActive(false);
 
-        CardDeck.AddRange(Utils.PopulateGrid(CardPrefab, pickedNumberOfPairs * 2, Utils.GetVisibleWorldBounds(Camera.main, 1f), numberOfColumns, yAxisPadding));
+        CardDeck.AddRange(Utils.PopulateGrid(CardPrefab, pickedNumberOfPairs * 2, Utils.GetVisibleWorldBounds(Camera.main, 1f), numberOfColumns, yAxisPadding, 0.2f));
         AssignCardImages();
     }
 
