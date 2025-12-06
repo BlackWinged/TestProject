@@ -17,7 +17,7 @@ public class CardLogic : MonoBehaviour
     private bool isFlipping = false;
     public bool isFlipped = false;
     private Vector3 originalPosition;
-    //private Quaternion originalRotation;
+    public bool IsDiscarded = false;
     private Renderer cardRenderer;
     private Collider cardCollider;
     private Mouse mouse;
@@ -66,7 +66,7 @@ public class CardLogic : MonoBehaviour
                 RaycastHit hit;
 
                 // Check if ray hits this card's collider
-                if (Physics.Raycast(ray, out hit))
+                if (Physics.Raycast(ray, out hit) && !IsDiscarded)
                 {
                     if (hit.collider == cardCollider)
                     {
@@ -146,6 +146,25 @@ public class CardLogic : MonoBehaviour
         //transform.rotation = originalRotation;
         isFlipped = false;
         isFlipping = false;
+    }
+
+    public IEnumerator Discard(Vector3 startPosition, Vector3 endPosition)
+    {
+        float elapsedTime = 0f;
+        StopAllCoroutines();
+
+        while (elapsedTime < flipDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / flipDuration;
+            float curveValue = flipCurve.Evaluate(t);
+
+            // Interpolate position (move upward)
+            transform.position = Vector3.Lerp(startPosition, endPosition, curveValue);
+
+
+            yield return null;
+        }
     }
 
 }

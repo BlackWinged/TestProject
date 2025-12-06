@@ -1,6 +1,8 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using TestProject;
 using TMPro;
 using UnityEngine;
@@ -16,6 +18,8 @@ public class MemoryGameLogic : MonoBehaviour
     [SerializeField] public int numberOfPairs_medium = 12;
     [Tooltip("Number of pairs of cards in the memory game - medium version")]
     [SerializeField] public int numberOfPairs_hard = 66;
+    [Tooltip("The amount of time cards stay visible")]
+    [SerializeField] public float cardHangTime = 1f;
 
 
     [Header("Prefabs and shit")]
@@ -23,6 +27,8 @@ public class MemoryGameLogic : MonoBehaviour
     [SerializeField] public GameObject CardPrefab;
     [Tooltip("Number of attempts")]
     [SerializeField] public TMP_Text CounterLabel;
+    [Tooltip("Discar pile transform")]
+    [SerializeField] public Transform DiscardPile;
 
     private int pickedNumberOfPairs;
     private List<GameObject> CardDeck = new List<GameObject>();
@@ -154,21 +160,31 @@ public class MemoryGameLogic : MonoBehaviour
 
     public void RegisterAttempt()
     {
-        var flippedCards = CardDeck.Where(x => x.GetComponent<CardLogic>().isFlipped).Count();
+        var flippedCards = CardDeck.Where(x => x.GetComponent<CardLogic>().isFlipped);
+        var flippedIds = flippedCards.GroupBy(x => x.GetComponent<CardLogic>().CardId);
 
-        if (flippedCards < 2) return;
+        if (flippedCards.Count() < 2) return;
 
         cardDelayTimer = Time.time;
         isWaitingToResetCards = true;
         NumberOfAttempts++;
         CounterLabel.text = $"Attempts: {NumberOfAttempts}";
+
+        if (flippedIds.Count() == 1)
+        {
+            foreach (var card in flippedCards)
+            {
+                card.GetComponent<CardLogic>().isFlipped = false;
+                card.GetComponent<CardLogic>().IsDiscarded = true;
+            }
+        }
     }
 
     public void CheckCardReset()
     {
         if (isWaitingToResetCards)
         {
-            if (Time.time - cardDelayTimer >= 1f)
+            if (Time.time - cardDelayTimer >= cardHangTime)
             {
                 foreach (var card in CardDeck.Select(x => x.GetComponent<CardLogic>()))
                 {
@@ -176,6 +192,11 @@ public class MemoryGameLogic : MonoBehaviour
                     {
                         StartCoroutine(card.FlipCard());
                         card.isFlipped = false;
+                    }
+
+                    if (card.IsDiscarded)
+                    {
+                        StartCoroutine(card.Discard(card.transform.position, DiscardPile.position));
                     }
                 }
                 isWaitingToResetCards = false;
