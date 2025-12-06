@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using TestProject;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
@@ -20,6 +21,8 @@ public class MemoryGameLogic : MonoBehaviour
     [Header("Prefabs and shit")]
     [Tooltip("Base card object")]
     [SerializeField] public GameObject CardPrefab;
+    [Tooltip("Number of attempts")]
+    [SerializeField] public TMP_Text CounterLabel;
 
     private int pickedNumberOfPairs;
     private List<GameObject> CardDeck = new List<GameObject>();
@@ -28,10 +31,13 @@ public class MemoryGameLogic : MonoBehaviour
     private float cardDelayTimer;
     private bool isWaitingToResetCards = false;
 
+    // Card images loaded from CardImages folder
+    private Sprite[] cardImages;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        cardImages = Resources.LoadAll<Sprite>("CardImages");
     }
 
     // Update is called once per frame
@@ -65,7 +71,73 @@ public class MemoryGameLogic : MonoBehaviour
         foreach (var button in buttons) button.SetActive(false);
 
         CardDeck.AddRange(Utils.PopulateGrid(CardPrefab, pickedNumberOfPairs * 2, Utils.GetVisibleWorldBounds(Camera.main, 1f), 3, 4.2f));
+        AssignCardImages();
     }
+
+    /// <summary>
+    /// Assigns images from CardImages folder to cards in the deck
+    /// </summary>
+    void AssignCardImages()
+    {
+        if (cardImages == null || cardImages.Length == 0)
+        {
+            Debug.LogWarning("No card images loaded! Cannot assign images to cards.");
+            return;
+        }
+
+        var cardSize = CardDeck.First().GetComponent<BoxCollider>().size;
+
+        // Shuffle the card images to randomize which image goes to which pair
+        System.Collections.Generic.List<Sprite> shuffledImages = new System.Collections.Generic.List<Sprite>(cardImages);
+        ShuffleList(shuffledImages);
+
+        // Ensure we have enough images for the number of pairs
+        int imagesNeeded = pickedNumberOfPairs;
+        if (shuffledImages.Count < imagesNeeded)
+        {
+            Debug.LogWarning($"Not enough card images! Need {imagesNeeded}, but only have {shuffledImages.Count}. Some cards will not have images.");
+        }
+
+        // Assign images to card pairs
+        for (int i = 0; i < CardDeck.Count; i += 2)
+        {
+            int cardIndex = i;
+
+            var firstCard = CardDeck[i].GetComponent<CardLogic>();
+            var secondCard = CardDeck[i + 1].GetComponent<CardLogic>();
+
+            var firstFrontRenderer = CardDeck[i].GetComponentsInChildren<SpriteRenderer>().Where(x => x.name.Contains("Front")).FirstOrDefault();
+            var secondFrontRenderer = CardDeck[i + 1].GetComponentsInChildren<SpriteRenderer>().Where(x => x.name.Contains("Front")).FirstOrDefault();
+
+            firstCard.CardId = shuffledImages[i].name;
+            secondCard.CardId = shuffledImages[i].name;
+
+            Sprite cardImage = shuffledImages[i];
+            //cardImage.
+            firstFrontRenderer.sprite = cardImage;
+            firstFrontRenderer.transform.localScale = new Vector3(0.1993179f, 0.1369252f, 1.29586f);
+            secondFrontRenderer.sprite = cardImage;
+            secondFrontRenderer.transform.localScale = new Vector3(0.1993179f, 0.1369252f, 1.29586f);
+        }
+    }
+
+    /// <summary>
+    /// Shuffles a list using Fisher-Yates algorithm
+    /// </summary>
+    void ShuffleList<T>(System.Collections.Generic.List<T> list)
+    {
+        System.Random rng = new System.Random();
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = rng.Next(n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
+    }
+
 
     public bool CanFlipCard()
     {
@@ -89,6 +161,7 @@ public class MemoryGameLogic : MonoBehaviour
         cardDelayTimer = Time.time;
         isWaitingToResetCards = true;
         NumberOfAttempts++;
+        CounterLabel.text = $"Attempts: {NumberOfAttempts}";
     }
 
     public void CheckCardReset()

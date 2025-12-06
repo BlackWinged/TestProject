@@ -12,6 +12,8 @@ public class CardLogic : MonoBehaviour
     [SerializeField] private float upwardMovement = 0.5f;
     [SerializeField] private AnimationCurve flipCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
+    public string CardId = "";
+
     private bool isFlipping = false;
     public bool isFlipped = false;
     private Vector3 originalPosition;
@@ -146,16 +148,4 @@ public class CardLogic : MonoBehaviour
         isFlipping = false;
     }
 
-
-    public class Card
-    {
-        public int id;
-        public bool isFlipped;
-        public bool isMatched;
-        public Card(int id)
-        {
-            this.id = id;
-            this.isFlipped = false;
-        }
-    }
 }
