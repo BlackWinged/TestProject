@@ -409,7 +409,6 @@ MonoBehaviour:
   gridSize: {x: 5, y: 4}
   spacing: 1.5
   randomizePositions: 1
-  targetCamera: {fileID: 64304832}
   zPosition: 0
   padding: 0.5
 --- !u!224 &839495198 stripped
@@ -704,6 +703,38 @@ PrefabInstance:
     - target: {fileID: 2905334316412423678, guid: be601c18d4cdb3a4a99778efe4e6d668, type: 3}
       propertyPath: m_Name
       value: GeneralUi
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017556759064397336, guid: be601c18d4cdb3a4a99778efe4e6d668, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017556759064397336, guid: be601c18d4cdb3a4a99778efe4e6d668, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017556759064397336, guid: be601c18d4cdb3a4a99778efe4e6d668, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017556759064397336, guid: be601c18d4cdb3a4a99778efe4e6d668, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017556759064397336, guid: be601c18d4cdb3a4a99778efe4e6d668, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 52.36209
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017556759064397336, guid: be601c18d4cdb3a4a99778efe4e6d668, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 45.122696
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017556759064397336, guid: be601c18d4cdb3a4a99778efe4e6d668, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 58.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017556759064397336, guid: be601c18d4cdb3a4a99778efe4e6d668, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -55.3
       objectReference: {fileID: 0}
     - target: {fileID: 6751079295344524787, guid: be601c18d4cdb3a4a99778efe4e6d668, type: 3}
       propertyPath: m_Pivot.x
