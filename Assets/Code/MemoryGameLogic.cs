@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using TestProject;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
@@ -20,6 +21,11 @@ public class MemoryGameLogic : MonoBehaviour
     [SerializeField] public int numberOfPairs_hard = 66;
     [Tooltip("The amount of time cards stay visible")]
     [SerializeField] public float cardHangTime = 1f;
+
+    [Tooltip("Number of columns on screen")]
+    [SerializeField] public int numberOfColumns = 6;
+    [Tooltip("Grid y axis padding")]
+    [SerializeField] public float yAxisPadding = 4.2f;
 
 
     [Header("Prefabs and shit")]
@@ -76,7 +82,7 @@ public class MemoryGameLogic : MonoBehaviour
         var buttons = GameObject.FindGameObjectsWithTag("HideableMenu");
         foreach (var button in buttons) button.SetActive(false);
 
-        CardDeck.AddRange(Utils.PopulateGrid(CardPrefab, pickedNumberOfPairs * 2, Utils.GetVisibleWorldBounds(Camera.main, 1f), 3, 4.2f));
+        CardDeck.AddRange(Utils.PopulateGrid(CardPrefab, pickedNumberOfPairs * 2, Utils.GetVisibleWorldBounds(Camera.main, 1f), numberOfColumns, yAxisPadding));
         AssignCardImages();
     }
 
@@ -94,7 +100,7 @@ public class MemoryGameLogic : MonoBehaviour
         var cardSize = CardDeck.First().GetComponent<BoxCollider>().size;
 
         // Shuffle the card images to randomize which image goes to which pair
-        System.Collections.Generic.List<Sprite> shuffledImages = new System.Collections.Generic.List<Sprite>(cardImages);
+        var shuffledImages = new List<Sprite>(cardImages);
         ShuffleList(shuffledImages);
 
         // Ensure we have enough images for the number of pairs
@@ -125,12 +131,14 @@ public class MemoryGameLogic : MonoBehaviour
             secondFrontRenderer.sprite = cardImage;
             secondFrontRenderer.transform.localScale = new Vector3(0.1993179f, 0.1369252f, 1.29586f);
         }
+
+        ShuffleList(CardDeck);
     }
 
     /// <summary>
     /// Shuffles a list using Fisher-Yates algorithm
     /// </summary>
-    void ShuffleList<T>(System.Collections.Generic.List<T> list)
+    void ShuffleList<T>(List<T> list)
     {
         System.Random rng = new System.Random();
         int n = list.Count;
@@ -202,6 +210,11 @@ public class MemoryGameLogic : MonoBehaviour
                 isWaitingToResetCards = false;
             }
         }
+    }
+
+    public void WinTheGame()
+    {
+        var winSplash = FindObjectsByType<TMP_Text>(FindObjectsSortMode.None).Where(x => x.name.Contains("Victory")).First();
     }
 }
 

@@ -42,9 +42,9 @@ namespace TestProject
             }
         }
 
-        public static IEnumerable<GameObject> PopulateGrid(GameObject prefab, int objectCount, Bounds bounds, int colNumber, float ySpacing = 0.6f)
+        public static IEnumerable<GameObject> PopulateGrid(GameObject prefab, int objectCount, Bounds bounds, int colNumber, float ySpacing = 0.6f, float jitter = 0f)
         {
-
+            var randy = new System.Random((int)Time.time);
             // Calculate spacing
             float xSpacing = bounds.size.x / (colNumber + 1);
             //float ySpacing = bounds.size.y / (rows + 1);
@@ -57,7 +57,9 @@ namespace TestProject
             {
                 for (int col = 0; col < colNumber; col++)
                 {
-                    Vector3 position = startPos + new Vector3(col * xSpacing, row * -ySpacing, 0);
+                    var newJitter = randy.Next(-1, 1) * jitter;
+
+                    Vector3 position = startPos + new Vector3(col * (xSpacing + newJitter) , row * (-ySpacing + newJitter), 0);
                     GameObject instance = Object.Instantiate(prefab, position, Quaternion.identity);
                     yield return instance;
                 }

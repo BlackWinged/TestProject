@@ -405,10 +405,9 @@ MonoBehaviour:
   prefabToInstantiate: {fileID: 1865257930587219031, guid: 0c222ba263e19564ca5cc8161c67ccc0, type: 3}
   prefabPath: SpritePrefabs/Fetched Image
   numberOfInstances: 20
-  useGridLayout: 0
+  useGridLayout: 1
   gridSize: {x: 5, y: 4}
-  spacing: 1.5
-  randomizePositions: 1
+  positionJitter: 0.5
   zPosition: 0
   padding: 0.5
 --- !u!224 &839495198 stripped

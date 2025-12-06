@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TestProject;
 using UnityEngine;
 
@@ -11,9 +12,8 @@ public class PopulateScreenWithPrefabs : MonoBehaviour
     [SerializeField] private int numberOfInstances = 20;
     [SerializeField] private bool useGridLayout = true;
     [SerializeField] private Vector2 gridSize = new Vector2(5, 4);
-    [SerializeField] private float spacing = 1.5f;
-    [SerializeField] private bool randomizePositions = false;
-    
+    [SerializeField] private float positionJitter = 0.5f;
+
     [Header("Camera Settings")]
     [SerializeField] private float zPosition = 0f;
     [SerializeField] private float padding = 0.5f;
@@ -53,17 +53,41 @@ public class PopulateScreenWithPrefabs : MonoBehaviour
         // Calculate visible world bounds
         Bounds visibleBounds = Utils.GetVisibleWorldBounds(targetCamera, padding);
 
-        if (useGridLayout)
+            PopulateGrid(prefabToInstantiate, numberOfInstances, visibleBounds, (int)gridSize.x);
+        //if (useGridLayout)
+        //{
+        //}
+        //else
+        //{
+        //    PopulateRandom(visibleBounds);
+        //}
+    }
+
+    public IEnumerable<GameObject> PopulateGrid(GameObject prefab, int objectCount, Bounds bounds, int colNumber, float ySpacing = 0.6f, float jitter = 0f)
+    {
+        var randy = new System.Random((int)Time.time);
+        // Calculate spacing
+        float xSpacing = bounds.size.x / (colNumber + 1);
+        //float ySpacing = bounds.size.y / (rows + 1);
+
+        // Starting position (bottom-left of bounds)
+        Vector3 startPos = bounds.min + new Vector3(xSpacing, ySpacing, 0);
+        startPos.z = 0;
+
+        for (int row = 0; row < Mathf.Ceil(objectCount / colNumber); row++)
         {
-            Utils.PopulateGrid(prefabToInstantiate, numberOfInstances, visibleBounds, (int)gridSize.x, spacing);
-        }
-        else
-        {
-            PopulateRandom(visibleBounds);
+            for (int col = 0; col < colNumber; col++)
+            {
+                var newJitter = randy.Next(-1, 1) * jitter;
+
+                Vector3 position = startPos + new Vector3(col * (xSpacing + newJitter), row * (-ySpacing + newJitter), 0);
+                GameObject instance = Object.Instantiate(prefab, position, Quaternion.identity);
+                yield return instance;
+            }
         }
     }
 
-   
+
 
     private void PopulateRandom(Bounds bounds)
     {
