@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using System.Collections;
+using System;
+using JetBrains.Annotations;
 
 public class CardLogic : MonoBehaviour
 {
@@ -10,21 +12,14 @@ public class CardLogic : MonoBehaviour
     [SerializeField] private float upwardMovement = 0.5f;
     [SerializeField] private AnimationCurve flipCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
-    [Header("Card Materials")]
-    [Tooltip("Material for the front face of the card")]
-    [SerializeField] private Material frontFaceMaterial;
-
-    [Tooltip("Material for the back face of the card")]
-    [SerializeField] private Material backFaceMaterial;
-
-
     private bool isFlipping = false;
-    private bool isFlipped = false;
+    public bool isFlipped = false;
     private Vector3 originalPosition;
     //private Quaternion originalRotation;
     private Renderer cardRenderer;
     private Collider cardCollider;
     private Mouse mouse;
+    private MemoryGameLogic memoryManager;
 
     void Start()
     {
@@ -45,22 +40,10 @@ public class CardLogic : MonoBehaviour
             cardCollider = GetComponentInChildren<Collider>();
         }
 
-        // Ensure there's a collider for click detection
-        if (cardCollider == null)
-        {
-            Debug.LogWarning($"CardLogic on {gameObject.name}: No Collider found! Adding BoxCollider. OnMouseDown requires a Collider.");
-            cardCollider = gameObject.AddComponent<BoxCollider>();
-        }
-
-
         // Get mouse input
         mouse = Mouse.current;
 
-        // If materials are not assigned, try to find them
-        if (cardRenderer != null && frontFaceMaterial == null)
-        {
-            frontFaceMaterial = cardRenderer.material;
-        }
+        memoryManager = FindAnyObjectByType<MemoryGameLogic>();
     }
 
     void Update()
@@ -83,16 +66,16 @@ public class CardLogic : MonoBehaviour
                 // Check if ray hits this card's collider
                 if (Physics.Raycast(ray, out hit))
                 {
-                    if (hit.collider == cardCollider && !isFlipping)
+                    if (hit.collider == cardCollider)
                     {
-                        StartCoroutine(FlipCard());
+                        Flip();
                     }
                 }
             }
         }
     }
 
-    IEnumerator FlipCard()
+    public IEnumerator FlipCard()
     {
         isFlipping = true;
 
@@ -135,7 +118,7 @@ public class CardLogic : MonoBehaviour
         // Ensure final values
         transform.position = startPosition;
 
-        isFlipped = !isFlipped;
+        
         isFlipping = false;
     }
 
@@ -144,7 +127,12 @@ public class CardLogic : MonoBehaviour
     {
         if (!isFlipping)
         {
-            StartCoroutine(FlipCard());
+            if (memoryManager.CanFlipCard())
+            {
+                StartCoroutine(FlipCard());
+                isFlipped = !isFlipped;
+                memoryManager.RegisterAttempt();
+            }
         }
     }
 
@@ -158,8 +146,6 @@ public class CardLogic : MonoBehaviour
         isFlipping = false;
     }
 
-    public bool IsFlipped => isFlipped;
-    public bool IsFlipping => isFlipping;
 
     public class Card
     {
