@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 64304832}
   - component: {fileID: 64304831}
   - component: {fileID: 64304834}
+  - component: {fileID: 64304835}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -256,6 +257,28 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &64304835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 64304830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df6936711413be24ca372432f0b21de0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraDrag
+  dragSpeed: 1
+  invertX: 0
+  invertY: 0
+  zoomSpeed: 0
+  minZoom: 1
+  maxZoom: 20
+  invertZoom: 0
+  useBounds: 0
+  minBounds: {x: -10, y: -10}
+  maxBounds: {x: 10, y: 10}
 --- !u!1 &256101360
 GameObject:
   m_ObjectHideFlags: 0
@@ -554,7 +577,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 480689731}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2133568290}
+        m_TargetAssemblyTypeName: MemoryGameLogic, Assembly-CSharp
+        m_MethodName: PickEasy
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &480689731
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -829,7 +864,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 756222877}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2133568290}
+        m_TargetAssemblyTypeName: MemoryGameLogic, Assembly-CSharp
+        m_MethodName: PickMedium
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &756222877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -950,7 +997,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1142377135}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2133568290}
+        m_TargetAssemblyTypeName: MemoryGameLogic, Assembly-CSharp
+        m_MethodName: PickHard
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1142377135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1565,6 +1624,7 @@ MonoBehaviour:
   numberOfPairs_easy: 6
   numberOfPairs_medium: 12
   numberOfPairs_hard: 66
+  CardPrefab: {fileID: 6923176237839804514, guid: fb06fc5488cb8b14ab7851d2300d84d8, type: 3}
 --- !u!4 &2133568291
 Transform:
   m_ObjectHideFlags: 0
