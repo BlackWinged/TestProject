@@ -1,14 +1,16 @@
 using System.Collections.Generic;
+using System.Linq;
 using TestProject;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PopulateScreenWithPrefabs : MonoBehaviour
 {
     [Header("Prefab Settings")]
     [SerializeField] private GameObject prefabToInstantiate;
     [SerializeField] private string prefabPath = "SpritePrefabs/Fetched Image";
-    
+
     [Header("Population Settings")]
     [SerializeField] private int numberOfInstances = 20;
     [SerializeField] private bool useGridLayout = true;
@@ -20,6 +22,7 @@ public class PopulateScreenWithPrefabs : MonoBehaviour
     [SerializeField] private float padding = 0.5f;
 
     private Camera targetCamera;
+
 
     private void Start()
     {
@@ -50,49 +53,41 @@ public class PopulateScreenWithPrefabs : MonoBehaviour
             Debug.LogError("Prefab or Camera is not assigned!");
             return;
         }
+        List<PicsumResponse> imageData = PicsumConnector.GrabRandomImages();
+        
+
 
         // Calculate visible world bounds
         Bounds visibleBounds = Utils.GetVisibleWorldBounds(targetCamera, padding);
 
+        var result = new List<GameObject>();
         if (useGridLayout)
         {
-            var result = new List <GameObject>();
-            result.AddRange(PopulateGrid(prefabToInstantiate, numberOfInstances, visibleBounds, (int)gridSize.x, gridSize.y, positionJitter));
+            result.AddRange(Utils.PopulateGrid(prefabToInstantiate, numberOfInstances, visibleBounds, (int)gridSize.x, gridSize.y, positionJitter));
         }
         else
         {
-            PopulateRandom(visibleBounds);
+            result = PopulateRandom(visibleBounds);
         }
-    }
-
-    public IEnumerable<GameObject> PopulateGrid(GameObject prefab, int objectCount, Bounds bounds, int colNumber, float ySpacing = 0.6f, float jitter = 0f)
-    {
-        var randy = new System.Random((int)Time.time);
-        // Calculate spacing
-        float xSpacing = bounds.size.x / (colNumber + 1);
-        //float ySpacing = bounds.size.y / (rows + 1);
-
-        // Starting position (bottom-left of bounds)
-        Vector3 startPos = bounds.min + new Vector3(xSpacing, ySpacing, 0);
-        startPos.z = 0;
-
-        for (int row = 0; row < Mathf.Ceil(objectCount / colNumber); row++)
+        for (var i = 0; i < result.Count; i++)
         {
-            for (int col = 0; col < colNumber; col++)
+            var imageObject = result[i].GetComponent<FetchOwnImage>();
+            //don't like this want random
+            //var imageAndAuthor = imageData[i];
+            var imageAndAuthor = imageData[Random.Range(0, imageData.Count() - 1)];
+            if (imageObject == null)
             {
-                var newJitter = randy.Next(-1, 1) * jitter;
-
-                Vector3 position = startPos + new Vector3(col * (xSpacing + newJitter), row * (-ySpacing + newJitter), 0);
-                GameObject instance = Object.Instantiate(prefab, position, Quaternion.identity);
-                yield return instance;
+                Debug.LogError("Prefab does not have a FetchAndSetImage component!");
+                continue;
             }
+            imageObject.SetImageData(imageAndAuthor);
         }
     }
 
 
-
-    private void PopulateRandom(Bounds bounds)
+    private List<GameObject> PopulateRandom(Bounds bounds)
     {
+        var result = new List<GameObject>();
         for (int i = 0; i < numberOfInstances; i++)
         {
             Vector3 randomPosition = new Vector3(
@@ -100,15 +95,14 @@ public class PopulateScreenWithPrefabs : MonoBehaviour
                 Random.Range(bounds.min.y, bounds.max.y),
                 zPosition
             );
-            InstantiatePrefab(randomPosition);
+            GameObject instance = Instantiate(prefabToInstantiate, randomPosition, Quaternion.identity);
+            instance.transform.SetParent(transform); // Parent to this GameObject for organization
+            result.Add(instance);
         }
+
+        return result;
     }
 
-    private void InstantiatePrefab(Vector3 position)
-    {
-        GameObject instance = Instantiate(prefabToInstantiate, position, Quaternion.identity);
-        instance.transform.SetParent(transform); // Parent to this GameObject for organization
-    }
 
     // Method to clear all instantiated prefabs
     public void ClearInstances()

@@ -182,7 +182,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -272,9 +272,9 @@ MonoBehaviour:
   dragSpeed: 1
   invertX: 0
   invertY: 0
-  zoomSpeed: 25
+  zoomSpeed: 40
   minZoom: 1
-  maxZoom: 20
+  maxZoom: 40
   invertZoom: 0
   useBounds: 0
   minBounds: {x: -10, y: -10}
@@ -406,8 +406,8 @@ MonoBehaviour:
   prefabPath: SpritePrefabs/Fetched Image
   numberOfInstances: 20
   useGridLayout: 1
-  gridSize: {x: 5, y: 4}
-  positionJitter: 0.5
+  gridSize: {x: 4, y: 6}
+  positionJitter: 0
   zPosition: 0
   padding: 0.5
 --- !u!224 &839495198 stripped

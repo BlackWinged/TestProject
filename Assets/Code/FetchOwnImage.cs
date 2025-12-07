@@ -1,28 +1,21 @@
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using TMPro;
+using System.Linq;
 
 public class FetchOwnImage : MonoBehaviour
 {
     private SpriteRenderer spriteRenderer;
-    private string imageUrl = "https://picsum.photos/536/354";
 
     void Start()
     {
         // Get the SpriteRenderer component on this GameObject
         spriteRenderer = GetComponent<SpriteRenderer>();
         
-        if (spriteRenderer == null)
-        {
-            Debug.LogError("FetchOwnImage: No SpriteRenderer component found on this GameObject!");
-            return;
-        }
-
-        // Start fetching the image
-        StartCoroutine(FetchImage());
     }
 
-    IEnumerator FetchImage()
+    IEnumerator FetchImage(string imageUrl)
     {
         using (UnityWebRequest request = UnityWebRequestTexture.GetTexture(imageUrl))
         {
@@ -42,11 +35,29 @@ public class FetchOwnImage : MonoBehaviour
 
                 // Assign the sprite to the SpriteRenderer component
                 spriteRenderer.sprite = sprite;
+                var canvii = GetComponentsInChildren<TMP_Text>();
+                canvii.Where(x => x.name.Contains("Loading")).ToList().ForEach(x => x.enabled = false);
+                canvii.Where(x => x.name.Contains("Author")).ToList().ForEach(x => x.enabled = true);
             }
             else
             {
                 Debug.LogError($"Failed to fetch image: {request.error}");
             }
         }
+    }
+
+    public void SetImageData(PicsumResponse imageData)
+    {
+        GetComponentsInChildren<TMP_Text>()
+            .Where(x => x.name.Contains("Author"))
+            .ToList()
+            .ForEach(x => x.text = imageData.author);
+
+        var imageComponents = imageData.download_url.Split("/").ToList();
+        imageComponents = imageComponents.Take(imageComponents.Count - 2).ToList();
+        var imageDownloadUrl = string.Join("/", imageComponents);
+        imageDownloadUrl += "/200/300";
+        StartCoroutine(FetchImage(imageDownloadUrl));
+
     }
 }
