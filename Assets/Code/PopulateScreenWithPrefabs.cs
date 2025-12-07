@@ -53,7 +53,7 @@ public class PopulateScreenWithPrefabs : MonoBehaviour
             Debug.LogError("Prefab or Camera is not assigned!");
             return;
         }
-        
+
 
 
         // Calculate visible world bounds
@@ -68,22 +68,27 @@ public class PopulateScreenWithPrefabs : MonoBehaviour
         {
             result = PopulateRandom(visibleBounds);
         }
-        for (var i = 0; i < result.Count; i++)
+        Debug.Log("Fetching images");
+        List<PicsumResponse> imageData = new List<PicsumResponse>();
+
+        StartCoroutine(PicsumConnector.GrabRandomImagesAsync((data) =>
         {
-            var imageObject = result[i].GetComponent<FetchOwnImage>();
-            //don't like this want random
-            //var imageAndAuthor = imageData[i];
-            Debug.Log("Fetching images");
-            List<PicsumResponse> imageData = PicsumConnector.GrabRandomImages();
+            imageData = data;
             Debug.Log("Finished fetching images");
-            var imageAndAuthor = imageData[Random.Range(0, imageData.Count() - 1)];
-            if (imageObject == null)
+            for (var i = 0; i < result.Count; i++)
             {
-                Debug.LogError("Prefab does not have a FetchAndSetImage component!");
-                continue;
+                var imageObject = result[i].GetComponent<FetchOwnImage>();
+                //don't like this want random
+                //var imageAndAuthor = imageData[i];
+                var imageAndAuthor = imageData[Random.Range(0, imageData.Count() - 1)];
+                if (imageObject == null)
+                {
+                    Debug.LogError("Prefab does not have a FetchAndSetImage component!");
+                    continue;
+                }
+                imageObject.SetImageData(imageAndAuthor);
             }
-            imageObject.SetImageData(imageAndAuthor);
-        }
+        }));
     }
 
 
