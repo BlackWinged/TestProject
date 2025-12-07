@@ -53,7 +53,6 @@ public class PopulateScreenWithPrefabs : MonoBehaviour
             Debug.LogError("Prefab or Camera is not assigned!");
             return;
         }
-        List<PicsumResponse> imageData = PicsumConnector.GrabRandomImages();
         
 
 
@@ -74,6 +73,9 @@ public class PopulateScreenWithPrefabs : MonoBehaviour
             var imageObject = result[i].GetComponent<FetchOwnImage>();
             //don't like this want random
             //var imageAndAuthor = imageData[i];
+            Debug.Log("Fetching images");
+            List<PicsumResponse> imageData = PicsumConnector.GrabRandomImages();
+            Debug.Log("Finished fetching images");
             var imageAndAuthor = imageData[Random.Range(0, imageData.Count() - 1)];
             if (imageObject == null)
             {
