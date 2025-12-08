@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - HideableMenu
+  - Error Handler
   layers:
   - Default
   - TransparentFX

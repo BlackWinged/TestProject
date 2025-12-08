@@ -65,5 +65,14 @@ namespace TestProject
                 }
             }
         }
+
+        public static void LogErrorMessage(string message)
+        {
+            var eh = GameObject.FindGameObjectWithTag(TagEnums.ErrorHandler);
+            if (eh == null) return;
+
+            var ehl = eh.GetComponent<ErrorHandlingLogic>();
+            ehl.AddErrorMessage(message);
+        }
     }
 }
