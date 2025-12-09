@@ -85,6 +85,7 @@ public class MemoryGameLogic : MonoBehaviour
         foreach (var button in buttons) button.SetActive(false);
 
         CardDeck.AddRange(Utils.PopulateGrid(CardPrefab, pickedNumberOfPairs * 2, Utils.GetVisibleWorldBounds(Camera.main, 1f), numberOfColumns, yAxisPadding, posJitter));
+        ShuffleList(CardDeck);
         AssignCardImages();
     }
 
@@ -134,7 +135,7 @@ public class MemoryGameLogic : MonoBehaviour
             secondFrontRenderer.transform.localScale = new Vector3(0.1993179f, 0.1369252f, 1.29586f);
         }
 
-        ShuffleList(CardDeck);
+
     }
 
     /// <summary>
@@ -210,13 +211,21 @@ public class MemoryGameLogic : MonoBehaviour
                     }
                 }
                 isWaitingToResetCards = false;
+
+                var remainingCards = CardDeck.Where(x => !x.GetComponent<CardLogic>().IsDiscarded).Count();
+                if (remainingCards == 0)
+                {
+                    WinTheGame();
+                }
             }
         }
     }
 
     public void WinTheGame()
     {
-        var winSplash = FindObjectsByType<TMP_Text>(FindObjectsSortMode.None).Where(x => x.name.Contains("Victory")).First();
+        var texts = FindObjectsByType<TMP_Text>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        var winSplash = texts.Where(x => x.gameObject.name == "Victory splash").FirstOrDefault();
+        winSplash.gameObject.SetActive(true);
     }
 }
 

@@ -26,7 +26,6 @@ public class PopulateScreenWithPrefabs : MonoBehaviour
 
     private void Start()
     {
-        Utils.LogErrorMessage("test error message");
         if (targetCamera == null)
         {
             targetCamera = Camera.main;
