@@ -3,6 +3,7 @@ using UnityEngine.Networking;
 using System.Collections;
 using TMPro;
 using System.Linq;
+using TestProject;
 
 public class FetchOwnImage : MonoBehaviour
 {
@@ -41,6 +42,7 @@ public class FetchOwnImage : MonoBehaviour
             }
             else
             {
+                Utils.LogErrorMessage($"Image with url: {imageUrl} failed download");
                 Debug.LogError($"Failed to fetch image: {request.error}");
             }
         }
@@ -56,7 +58,7 @@ public class FetchOwnImage : MonoBehaviour
         var imageComponents = imageData.download_url.Split("/").ToList();
         imageComponents = imageComponents.Take(imageComponents.Count - 2).ToList();
         var imageDownloadUrl = string.Join("/", imageComponents);
-        imageDownloadUrl += "/200/300";
+        imageDownloadUrl += "/500/400";
         StartCoroutine(FetchImage(imageDownloadUrl));
 
     }

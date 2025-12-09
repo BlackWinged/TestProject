@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using TestProject;
 
 public class PicsumConnector : MonoBehaviour
 {
@@ -26,6 +27,7 @@ public class PicsumConnector : MonoBehaviour
             else
             {
                 Debug.LogError($"Failed to fetch images from Picsum API: {request.error}");
+                Utils.LogErrorMessage("Failed to get list of all images and authors, possible picsum API downtime. Or, yknow, you fat fingered it");
             }
         }
 

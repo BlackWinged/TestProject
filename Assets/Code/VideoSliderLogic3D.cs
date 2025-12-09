@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 using TMPro;
+using TestProject;
 
 public class VideoSliderLogic3D : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class VideoSliderLogic3D : MonoBehaviour
     void Start()
     {
         SetupProgressSlider();
+        videoPlayer.errorReceived += VideoPlayerErrorHandler;
     }
 
     void SetupProgressSlider()
@@ -157,6 +159,11 @@ public class VideoSliderLogic3D : MonoBehaviour
         {
             progressSlider.onValueChanged.RemoveListener(OnSliderValueChanged);
         }
+    }
+
+    private void VideoPlayerErrorHandler(VideoPlayer vp, string message)
+    {
+        Utils.LogErrorMessage("Video file is not reachable right now. Presumably a flying monkey problem");
     }
 }
 

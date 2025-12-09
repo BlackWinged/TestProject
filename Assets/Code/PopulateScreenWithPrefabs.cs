@@ -74,19 +74,22 @@ public class PopulateScreenWithPrefabs : MonoBehaviour
         StartCoroutine(PicsumConnector.GrabRandomImagesAsync((data) =>
         {
             imageData = data;
-            Debug.Log("Finished fetching images");
-            for (var i = 0; i < result.Count; i++)
+            if (imageData.Count > 0)
             {
-                var imageObject = result[i].GetComponent<FetchOwnImage>();
-                //don't like this want random
-                //var imageAndAuthor = imageData[i];
-                var imageAndAuthor = imageData[Random.Range(0, imageData.Count() - 1)];
-                if (imageObject == null)
+                Debug.Log("Finished fetching images");
+                for (var i = 0; i < result.Count; i++)
                 {
-                    Debug.LogError("Prefab does not have a FetchAndSetImage component!");
-                    continue;
+                    var imageObject = result[i].GetComponent<FetchOwnImage>();
+                    //don't like this want random
+                    //var imageAndAuthor = imageData[i];
+                    var imageAndAuthor = imageData[Random.Range(0, imageData.Count() - 1)];
+                    if (imageObject == null)
+                    {
+                        Utils.LogErrorMessage("Prefab does not have fetchOwnImage component, check your setup");
+                        continue;
+                    }
+                    imageObject.SetImageData(imageAndAuthor);
                 }
-                imageObject.SetImageData(imageAndAuthor);
             }
         }));
     }
