@@ -20,7 +20,6 @@ public class PicsumConnector : MonoBehaviour
             if (request.result == UnityWebRequest.Result.Success)
             {
                 string jsonResponse = request.downloadHandler.text;
-                //results = DeserializePicsumResponse(jsonResponse);
                 results = DeserializePicsumResponse(jsonResponse);
                 Debug.Log($"Successfully fetched {results.Count} images from Picsum API");
             }
@@ -44,7 +43,7 @@ public class PicsumConnector : MonoBehaviour
 
             while (!request.isDone)
             {
-                //there has to be a better way to do this
+                //there has got to be a better way to do this
             }
 
             if (request.result == UnityWebRequest.Result.Success)
