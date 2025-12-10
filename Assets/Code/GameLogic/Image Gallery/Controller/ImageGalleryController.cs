@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class PopulateScreenWithPrefabs : MonoBehaviour
+public class ImageGalleryController : MonoBehaviour
 {
     [Header("Prefab Settings")]
     [SerializeField] private GameObject prefabToInstantiate;

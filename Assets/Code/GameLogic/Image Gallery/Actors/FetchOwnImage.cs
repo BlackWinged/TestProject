@@ -11,9 +11,7 @@ public class FetchOwnImage : MonoBehaviour
 
     void Start()
     {
-        // Get the SpriteRenderer component on this GameObject
         spriteRenderer = GetComponent<SpriteRenderer>();
-        
     }
 
     IEnumerator FetchImage(string imageUrl)

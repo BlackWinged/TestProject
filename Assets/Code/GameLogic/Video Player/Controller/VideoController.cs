@@ -4,7 +4,7 @@ using UnityEngine.Video;
 using TMPro;
 using TestProject;
 
-public class VideoSliderLogic3D : MonoBehaviour
+public class VideoController : MonoBehaviour
 {
     [Header("Progress Tracking (UI)")]
     [Tooltip("UI Slider for video progress tracking and seeking")]

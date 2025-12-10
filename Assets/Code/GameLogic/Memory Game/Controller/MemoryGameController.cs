@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
-public class MemoryGameLogic : MonoBehaviour
+public class MemoryGameController : MonoBehaviour
 {
     [Header("Game Settings")]
     [Tooltip("Number of pairs of cards in the memory game - easy version")]

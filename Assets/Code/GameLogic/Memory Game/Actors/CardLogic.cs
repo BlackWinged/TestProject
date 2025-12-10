@@ -21,31 +21,26 @@ public class CardLogic : MonoBehaviour
     private Renderer cardRenderer;
     private Collider cardCollider;
     private Mouse mouse;
-    private MemoryGameLogic memoryManager;
+    private MemoryGameController memoryManager;
 
     void Start()
     {
         originalPosition = transform.position;
-        //originalRotation = transform.rotation;
 
-        // Get renderer component
         cardRenderer = GetComponent<Renderer>();
         if (cardRenderer == null)
         {
             cardRenderer = GetComponentInChildren<Renderer>();
         }
 
-        // Get collider component
         cardCollider = GetComponent<Collider>();
         if (cardCollider == null)
         {
             cardCollider = GetComponentInChildren<Collider>();
         }
 
-        // Get mouse input
         mouse = Mouse.current;
-
-        memoryManager = FindAnyObjectByType<MemoryGameLogic>();
+        memoryManager = FindAnyObjectByType<MemoryGameController>();
     }
 
     void Update()
@@ -94,10 +89,7 @@ public class CardLogic : MonoBehaviour
             float t = elapsedTime / flipDuration;
             float curveValue = flipCurve.Evaluate(t);
 
-            // Interpolate position (move upward)
             transform.position = Vector3.Lerp(startPosition, endPosition, curveValue);
-
-            // Interpolate rotation (flip 180 degrees)
             transform.rotation = Quaternion.Lerp(startRotation, endRotation, curveValue);
 
             yield return null;
@@ -110,21 +102,15 @@ public class CardLogic : MonoBehaviour
             float t = elapsedTime / (flipDuration / 2);
             float curveValue = flipCurve.Evaluate(t);
 
-            // Interpolate position (move upward)
             transform.position = Vector3.Lerp(endPosition, startPosition, curveValue);
-
 
             yield return null;
         }
 
-        // Ensure final values
         transform.position = startPosition;
-
-        
         isFlipping = false;
     }
 
-    // Public method to flip programmatically
     public void Flip()
     {
         if (!isFlipping)
@@ -137,17 +123,7 @@ public class CardLogic : MonoBehaviour
             }
         }
     }
-
-    // Reset card to original state
-    public void ResetCard()
-    {
-        StopAllCoroutines();
-        transform.position = originalPosition;
-        //transform.rotation = originalRotation;
-        isFlipped = false;
-        isFlipping = false;
-    }
-
+    
     public IEnumerator Discard(Vector3 startPosition, Vector3 endPosition)
     {
         float elapsedTime = 0f;
@@ -159,9 +135,7 @@ public class CardLogic : MonoBehaviour
             float t = elapsedTime / flipDuration;
             float curveValue = flipCurve.Evaluate(t);
 
-            // Interpolate position (move upward)
             transform.position = Vector3.Lerp(startPosition, endPosition, curveValue);
-
 
             yield return null;
         }

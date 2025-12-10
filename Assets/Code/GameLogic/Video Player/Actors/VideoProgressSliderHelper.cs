@@ -11,7 +11,7 @@ using UnityEngine.EventSystems;
 public class VideoProgressSliderHelper : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDownHandler
 {
     private Slider slider;
-    private VideoSliderLogic3D videoPlayer3D;
+    private VideoController videoPlayer3D;
 
     void Start()
     {
@@ -20,11 +20,11 @@ public class VideoProgressSliderHelper : MonoBehaviour, IDragHandler, IEndDragHa
         // Try to find VideoPlayer3D in the scene
         if (videoPlayer3D == null)
         {
-            videoPlayer3D = FindAnyObjectByType<VideoSliderLogic3D>();
+            videoPlayer3D = FindAnyObjectByType<VideoController>();
         }
     }
 
-    public void SetVideoPlayer(VideoSliderLogic3D player)
+    public void SetVideoPlayer(VideoController player)
     {
         videoPlayer3D = player;
     }
