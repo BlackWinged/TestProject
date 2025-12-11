@@ -408,6 +408,7 @@ MonoBehaviour:
   useGridLayout: 1
   gridSize: {x: 4, y: 6}
   positionJitter: 0
+  gridYOffset: 7
   zPosition: 0
   padding: 0.5
 --- !u!224 &839495198 stripped

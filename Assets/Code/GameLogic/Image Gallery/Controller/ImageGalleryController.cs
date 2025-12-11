@@ -16,6 +16,8 @@ public class ImageGalleryController : MonoBehaviour
     [SerializeField] private bool useGridLayout = true;
     [SerializeField] private Vector2 gridSize = new Vector2(5, 4);
     [SerializeField] private float positionJitter = 0.5f;
+    [SerializeField] private float gridYOffset = -1.5f;
+
 
     [Header("Camera Settings")]
     [SerializeField] private float zPosition = 0f;
@@ -62,7 +64,7 @@ public class ImageGalleryController : MonoBehaviour
         var result = new List<GameObject>();
         if (useGridLayout)
         {
-            result.AddRange(Utils.PopulateGrid(prefabToInstantiate, numberOfInstances, visibleBounds, (int)gridSize.x, gridSize.y, positionJitter));
+            result.AddRange(Utils.PopulateGrid(prefabToInstantiate, numberOfInstances, visibleBounds, (int)gridSize.x, gridSize.y, positionJitter, gridYOffset));
         }
         else
         {
