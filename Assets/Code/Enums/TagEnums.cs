@@ -6,5 +6,6 @@ public class TagEnums
 {
     public static string HideableMenu => "HideableMenu";
     public static string ErrorHandler => "Error Handler";
+    public static string Instructiones => "Instructiones";
 }
 

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - HideableMenu
   - Error Handler
+  - Instructiones
   layers:
   - Default
   - TransparentFX
