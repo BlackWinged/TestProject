@@ -1,0 +1,77 @@
+{
+    "version": 1,
+    "name": "DefaultInputs",
+    "maps": [
+        {
+            "name": "Clicky",
+            "id": "b88b0e8a-80b1-414f-9160-ce5e3f4b94c3",
+            "actions": [
+                {
+                    "name": "Click Screen",
+                    "type": "Button",
+                    "id": "096d759a-30b9-4f77-9fe5-058063f4eb0c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "CursorPosition",
+                    "type": "Value",
+                    "id": "d3ef9dfe-decc-4602-a5d1-2ff968346e2d",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "432f99ea-6be3-42b5-91c2-645f526dda8f",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Click Screen",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fb75664f-ea6f-42e0-a164-e042df0ef53d",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Click Screen",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fd05b211-c4dc-48c3-aacb-d489130158bc",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CursorPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a2b0ab0a-3e7e-4344-9743-8f9f14d1ac3a",
+                    "path": "<Touchscreen>/primaryTouch/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CursorPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
