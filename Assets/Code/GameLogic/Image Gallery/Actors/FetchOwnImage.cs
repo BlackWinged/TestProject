@@ -9,17 +9,26 @@ using UnityEngine.Networking;
 public class FetchOwnImage : MonoBehaviour
 {
     [SerializeField]
-    [Tooltip("Beeeeg image")]
-    private GameObject beeeegImage;
+    [Tooltip("Beeeeg image x axis")]
+    private int thumbnail_size_x = 500;
+    [SerializeField]
+    [Tooltip("Beeeeg image y axis")]
+    private int thumbnail_size_y = 400;
 
     private SpriteRenderer spriteRenderer;
 
     //set to public so I can debug this shit
     public Vector2 mousePosition;
+    private BoxCollider2D ownCollider;
+    private string fullImageUrl = "";
+    private string smallImageUrl = "";
+    private bool embigulated = false;
 
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        ownCollider = GetComponent<BoxCollider2D>();
+        ownCollider.size = spriteRenderer.size;
     }
 
 
@@ -44,6 +53,7 @@ public class FetchOwnImage : MonoBehaviour
 
                 // Assign the sprite to the SpriteRenderer component
                 spriteRenderer.sprite = sprite;
+                spriteRenderer.size = new Vector2(thumbnail_size_x, thumbnail_size_y);
                 var canvii = GetComponentsInChildren<TMP_Text>();
                 canvii.Where(x => x.name.Contains("Loading")).ToList().ForEach(x => x.enabled = false);
                 canvii.Where(x => x.name.Contains("Author")).ToList().ForEach(x => x.enabled = true);
@@ -56,45 +66,53 @@ public class FetchOwnImage : MonoBehaviour
         }
     }
 
-    public void SetImageData(PicsumResponse imageData)
+    public void SetImageData(PicsumResponse imageData, bool fullSized = false)
     {
         GetComponentsInChildren<TMP_Text>()
             .Where(x => x.name.Contains("Author"))
             .ToList()
             .ForEach(x => x.text = imageData.author);
 
+        //need this for the beeeeg image
+        fullImageUrl = imageData.download_url;
+
         var imageComponents = imageData.download_url.Split("/").ToList();
         imageComponents = imageComponents.Take(imageComponents.Count - 2).ToList();
         var imageDownloadUrl = string.Join("/", imageComponents);
-        imageDownloadUrl += "/500/400";
+        imageDownloadUrl += $"/{thumbnail_size_x}/{thumbnail_size_y}";
+        smallImageUrl = imageDownloadUrl;
         StartCoroutine(FetchImage(imageDownloadUrl));
-
     }
 
-    //void CheckRaycastClick()
-    //{
-    //    // Check for left mouse button click
-    //    if (mouse.leftButton.wasPressedThisFrame)
-    //    {
-    //        // Create ray from camera through mouse position
-    //        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
-    //        RaycastHit hit;
-
-    //        // Check if ray hits this card's collider
-    //        if (Physics.Raycast(ray, out hit) && !IsDiscarded)
-    //        {
-    //            if (hit.collider == cardCollider)
-    //            {
-    //                Flip();
-    //            }
-    //        }
-    //    }
-    //}
+    bool CheckRaycastClick()
+    {
+        var hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(mousePosition), Vector2.up, 0.02f);
+        if (hit)
+        {
+            if (hit.collider == ownCollider)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void OnCursorPosition(InputValue value) => mousePosition = value.Get<Vector2>();
     public void OnClickScreen(InputValue value)
     {
-        //CheckRaycastClick();
-        var test = value;
+        if (CheckRaycastClick())
+        {
+            StartCoroutine(FetchImage(fullImageUrl));
+            transform.position = new Vector3(transform.position.x, transform.position.y, -2);
+            embigulated = true;
+        } else
+        {
+            if (embigulated)
+            {
+                StartCoroutine(FetchImage(smallImageUrl));
+                transform.position = new Vector3(transform.position.x, transform.position.y, 0);
+                embigulated = false;
+            }
+        }
     }
 }
