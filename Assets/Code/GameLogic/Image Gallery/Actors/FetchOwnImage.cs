@@ -69,8 +69,15 @@ public class FetchOwnImage : MonoBehaviour
                     );
                 var canvii = GetComponentsInChildren<TMP_Text>();
                 canvii.Where(x => x.name.Contains("Loading")).ToList().ForEach(x => x.enabled = false);
-                canvii.Where(x => x.name.Contains("Author")).ToList().ForEach(x => x.enabled = true);
-                StartCoroutine(ResizeRenderer(callback));
+                if (!embigulated)
+                {
+                    canvii.Where(x => x.name.Contains("Author")).ToList().ForEach(x => x.enabled = true);
+                }
+                else
+                {
+                    canvii.Where(x => x.name.Contains("Author")).ToList().ForEach(x => x.enabled = false);
+                }
+                    StartCoroutine(ResizeRenderer(callback));
             }
             else
             {
