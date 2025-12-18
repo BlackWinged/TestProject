@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Linq;
 using TestProject;
@@ -9,11 +10,14 @@ using UnityEngine.Networking;
 public class FetchOwnImage : MonoBehaviour
 {
     [SerializeField]
-    [Tooltip("Beeeeg image x axis")]
+    [Tooltip("Smol image x axis")]
     private int thumbnail_size_x = 500;
     [SerializeField]
-    [Tooltip("Beeeeg image y axis")]
+    [Tooltip("Smol image y axis")]
     private int thumbnail_size_y = 400;
+    [SerializeField]
+    [Tooltip("Time required to embiggen in seconds")]
+    private float EmbiggenTimer = 0.7f;
 
     private SpriteRenderer spriteRenderer;
 
@@ -23,17 +27,19 @@ public class FetchOwnImage : MonoBehaviour
     private string fullImageUrl = "";
     private string smallImageUrl = "";
     private bool embigulated = false;
+    private Vector3 originalScale;
 
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         ownCollider = GetComponent<BoxCollider2D>();
         ownCollider.size = spriteRenderer.size;
+        originalScale = transform.localScale;
     }
 
 
 
-    IEnumerator FetchImage(string imageUrl)
+    IEnumerator FetchImage(string imageUrl, Action callback = null)
     {
         using (UnityWebRequest request = UnityWebRequestTexture.GetTexture(imageUrl))
         {
@@ -51,18 +57,47 @@ public class FetchOwnImage : MonoBehaviour
                     new Vector2(0.5f, 0.5f)
                 );
 
-                // Assign the sprite to the SpriteRenderer component
+
+                var scale_x = (float)thumbnail_size_x / texture.width;
+                var scale_y = (float)thumbnail_size_y / texture.height;
+
                 spriteRenderer.sprite = sprite;
-                spriteRenderer.size = new Vector2(thumbnail_size_x, thumbnail_size_y);
+                spriteRenderer.transform.localScale = new Vector3(
+                    originalScale.x * scale_x,
+                    originalScale.y * scale_y,
+                    originalScale.z
+                    );
                 var canvii = GetComponentsInChildren<TMP_Text>();
                 canvii.Where(x => x.name.Contains("Loading")).ToList().ForEach(x => x.enabled = false);
                 canvii.Where(x => x.name.Contains("Author")).ToList().ForEach(x => x.enabled = true);
+                StartCoroutine(ResizeRenderer(callback));
             }
             else
             {
                 Utils.LogErrorMessage($"Image with url: {imageUrl} failed download");
                 Debug.LogError($"Failed to fetch image: {request.error}");
             }
+        }
+    }
+
+    public IEnumerator ResizeRenderer(Action callback)
+    {
+        var timer = 0f;
+        var currentScale = transform.localScale;
+
+        while (timer < EmbiggenTimer)
+        {
+            var progress = timer / EmbiggenTimer;
+            transform.localScale = Vector3.Lerp(currentScale, originalScale, progress);
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+
+        if (callback != null)
+        {
+            callback();
         }
     }
 
@@ -84,7 +119,7 @@ public class FetchOwnImage : MonoBehaviour
         StartCoroutine(FetchImage(imageDownloadUrl));
     }
 
-    bool CheckRaycastClick()
+    bool CheckRaycastClick(Action callback = null)
     {
         var hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(mousePosition), Vector2.up, 0.02f);
         if (hit)
@@ -105,12 +140,15 @@ public class FetchOwnImage : MonoBehaviour
             StartCoroutine(FetchImage(fullImageUrl));
             transform.position = new Vector3(transform.position.x, transform.position.y, -2);
             embigulated = true;
-        } else
+        }
+        else
         {
             if (embigulated)
             {
-                StartCoroutine(FetchImage(smallImageUrl));
-                transform.position = new Vector3(transform.position.x, transform.position.y, 0);
+                StartCoroutine(FetchImage(smallImageUrl, () =>
+                {
+                    transform.position = new Vector3(transform.position.x, transform.position.y, 0);
+                }));
                 embigulated = false;
             }
         }
